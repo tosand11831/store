@@ -1,0 +1,275 @@
+swagger: '2.0'
+info:
+  description: Store Example
+  version: 1.0.0
+  title: Store
+host: 'localhost:8080'
+basePath: /
+schemes:
+  - http
+paths:
+  /products:
+    put:
+      tags:
+        - products
+      summary: Create distinct product
+      description: Create a distinct product
+      operationId: putProduct
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: product data body
+          schema:
+            type: object
+            required:
+              - name
+              - value
+            properties:
+              name:
+                type: string
+              value:
+                type: number
+              currencyIso:
+                type: string
+              category:
+                type: string
+      responses:
+        '400':
+          description: Invalid request
+    get:
+      tags:
+        - products
+      summary: Get distinct product
+      description: Get a distinct product
+      operationId: getProduct
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: id
+          description: product id
+          type: string
+        - in: query
+          name: name
+          type: string
+          description: product name
+        - in: query
+          name: currencyIso
+          type: string
+          description: currency iso
+      responses:
+        '404':
+          description: product not found
+    post:
+      tags:
+        - products
+      summary: Update distinct product
+      description: Update a distinct product
+      operationId: postProduct
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: id
+          description: product id
+          type: string
+          required: true
+        - in: body
+          name: product data body
+          required: true
+          schema:
+            type: object
+            required:
+              - name
+              - value
+            properties:
+              name:
+                type: string
+              value:
+                type: number
+      responses:
+        '400':
+          description: bad request
+        '404':
+          description: product not found
+    delete:
+      tags:
+        - products
+      summary: Delete disinct product
+      description: Delete a distinct product
+      operationId: deleteProduct
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: id
+          description: product id
+          type: string
+          required: true
+      responses:
+        '404':
+          description: product not found
+  '/categories/{categories}':
+    put:
+      tags:
+        - categories
+      summary: Create categories
+      description: Create categories
+      operationId: putCategory
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: categories
+          required: true
+          type: string
+          description: category path /c1_c2_..._cN/
+        - in: body
+          name: category data body
+          required: false
+          schema:
+            type: object
+            required:
+              - products
+            properties:
+              products:
+                description: productIds
+                type: array
+                items:
+                  type: string
+      responses:
+        '404':
+          description: product not found
+    get:
+      tags:
+        - categories
+      summary: Get category and subcategories
+      description: Get category and subcategories
+      operationId: getCategories
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: categories
+          description: category path /c1_c2_..._cN/
+          required: true
+          type: string
+      responses:
+        '500':
+          description: internal error
+    post:
+      tags:
+        - categories
+      summary: Update categories
+      description: Update categories
+      operationId: postCategories
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: categories
+          required: true
+          type: string
+        - in: body
+          name: category data body
+          required: true
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                description: name of category and inside category path
+                type: string
+      responses:
+        '404':
+          description: not found
+    delete:
+      tags:
+        - categories
+      summary: Delete categories
+      description: Delete categories
+      operationId: deleteCategory
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: categories
+          required: true
+          type: string
+      responses:
+        '404':
+          description: not found
+  /categories:
+    get:
+      tags:
+        - categories
+      summary: Get all available categories
+      description: Get all available categories
+      operationId: getAllCategories
+      produces:
+        - application/json
+      responses:
+        '500':
+          description: internal error
+  '/categories/{categories}/products':
+    get:
+      tags:
+        - categories
+      summary: Get products associated with distinct category path
+      description: Get products associated with distinct category path
+      operationId: getCatProducts
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: categories
+          type: string
+          description: category path /c1_c2_..._cN/
+          required: true
+      responses:
+        '404':
+          description: not found
+  '/categories/{categories}/products/{action}':
+    post:
+      tags:
+        - categories
+      summary: Add or remove products to distinct category
+      description: Add or remove products to distinct category
+      operationId: addRemoveProductCategory
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: categories
+          description: category path /c1_c2_..._cN/
+          type: string
+          required: true
+        - in: path
+          name: action
+          description: action can either be add or remove
+          type: string
+          required: true
+        - in: body
+          name: product data body
+          required: true
+          schema:
+            type: object
+            required:
+              - products
+            properties:
+              products:
+                description: productids
+                type: array
+                items:
+                  type: string
+      responses:
+        '400':
+          description: bad request
+        '404':
+          description: category not found
