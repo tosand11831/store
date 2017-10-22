@@ -268,9 +268,10 @@ public class CategoryProductRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name", is("Product2")));
 
-        // should return 404 because no product is associated with Category2
+        // should return empty because no product is associated with Category2
         mockMvc.perform(get("/categories/category2/products"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is(Collections.emptyList())));
 
         // should add (update) a subcategory2 to a existing category1
         mockMvc.perform(put("/categories/category1_subCategory2"))

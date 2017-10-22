@@ -107,8 +107,6 @@ public class CategoryProductRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         Iterable<Product> all = productRepository.findAll(category.getProducts());
-        if(!all.iterator().hasNext())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         List<Product> target = new ArrayList<>();
         all.forEach(target::add);
